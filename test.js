@@ -120,6 +120,45 @@ tape('getStudentGradesReport', async function (t) {
   }
 })
 
+tape('getCourseGradesReport', async function (t) {
+  const url = `${endpoint}/course/all/grades`
+  try {
+    const { data, response } = await jsonist.get(url)
+    if (response.statusCode !== 200) {
+      throw new Error('Error connecting to sqlite database; did you initialize it by running `npm run init-db`?')
+    }
+    t.deepEqual({
+      Calculus: {
+        min: 0,
+        max: 99,
+        average: '50.09'
+      },
+      Microeconomics: {
+        min: 0,
+        max: 99,
+        average: '49.81'
+      },
+      Statistics: {
+        min: 0,
+        max: 99,
+        average: '50.02'
+      },
+      Astronomy: {
+        min: 0,
+        max: 99,
+        average: '50.04'
+      },
+      Philosophy: {
+        min: 0,
+        max: 99,
+        average: '50.02'
+      }
+    }, data.data, 'It should return the course grades report')
+  } catch (e) {
+    t.error(e)
+  }
+})
+
 tape('cleanup', function (t) {
   server.closeDB()
   server.close()
