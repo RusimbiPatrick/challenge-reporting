@@ -2,7 +2,8 @@ const { STATUS_CODES } = require('http')
 
 module.exports = {
   notFound,
-  handleError
+  handleError,
+  isIdNumber
 }
 
 function handleError (err, req, res, next) {
@@ -16,4 +17,18 @@ function handleError (err, req, res, next) {
 
 function notFound (req, res) {
   res.status(404).json({ error: 'Not Found' })
+}
+
+function isIdNumber (req, res, next) {
+  const { id } = req.params
+  const toNumber = Number(id)
+  const isNumber = !isNaN(toNumber)
+  if (!isNumber) {
+    return res.status(400).json({
+      status: 400,
+      success: false,
+      error: 'Invalid id. Id should be a number'
+    })
+  }
+  next()
 }
