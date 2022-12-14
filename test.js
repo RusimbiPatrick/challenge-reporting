@@ -20,6 +20,60 @@ tape('health', async function (t) {
   }
 })
 
+tape('Id validation middleware', async function (t) {
+  const url = `${endpoint}/student/kjkdns`
+  try {
+    const { data } = await jsonist.get(url)
+    t.notOk(data.success, 'Should reject invalid ids')
+    t.end()
+  } catch (e) {
+    t.error(e)
+  }
+})
+
+tape('getStudent', async function (t) {
+  const url = `${endpoint}/student/20000`
+  try {
+    const { data, response } = await jsonist.get(url)
+    if (response.statusCode !== 200) {
+      throw new Error('Error connecting to sqlite database; did you initialize it by running `npm run init-db`?')
+    }
+    t.deepEqual({
+      id: 20000,
+      first_name: 'Luigi',
+      last_name: 'Smith',
+      email: 'Luigi56@gmail.com',
+      is_registered: 0,
+      is_approved: 0,
+      address: '459 Retta Street Apt. 668',
+      city: 'Daly City',
+      state: 'CA',
+      zip: '94070',
+      phone: '791.347.9979',
+      created: '1628772504550.0',
+      last_login: '1628785367888.0',
+      ip_address: '232.51.190.184'
+    }, data.data, 'Should return the right student')
+  } catch (e) {
+    console.log(e)
+  }
+})
+
+tape('student id should be in the database', async function (t) {
+  const url = `${endpoint}/student/800000000`
+  try {
+    const { data, response } = await jsonist.get(url)
+    t.isEqual(404, response.statusCode, 'should return a 404 status')
+    t.deepEqual({
+      status: 404,
+      success: false,
+      message: 'Student not found'
+    }, data, 'should return not found')
+  } catch (e) {
+    console.log(e)
+  }
+})
+
 tape('cleanup', function (t) {
   server.closeDB()
   server.close()

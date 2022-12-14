@@ -16,8 +16,8 @@ const app = express()
 app.use(express.json())
 
 app.get('/health', api.getHealth)
-app.get('/student/:id', api.getStudent)
-app.get('/student/:id/grades', api.getStudentGradesReport)
+app.get('/student/:id', middleware.isIdNumber, api.getStudent)
+app.get('/student/:id/grades', middleware.isIdNumber, api.getStudentGradesReport)
 app.get('/course/all/grades', api.getCourseGradesReport)
 
 app.use(middleware.handleError)
