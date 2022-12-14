@@ -74,6 +74,52 @@ tape('student id should be in the database', async function (t) {
   }
 })
 
+tape('getStudentGradesReport', async function (t) {
+  const url = `${endpoint}/student/1/grades`
+  try {
+    const { data, response } = await jsonist.get(url)
+    if (response.statusCode !== 200) {
+      throw new Error('Error connecting to sqlite database; did you initialize it by running `npm run init-db`?')
+    }
+    t.deepEqual({
+      id: 1,
+      first_name: 'Scotty',
+      last_name: 'Quigley',
+      email: 'Scotty79@hotmail.com',
+      is_registered: 1,
+      is_approved: 1,
+      address: '241 Denesik Knolls Apt. 955',
+      city: 'Buffalo',
+      state: 'ME',
+      zip: '04710',
+      phone: '1-503-560-6954',
+      created: '1628767983203.0',
+      last_login: '1628770445749.0',
+      ip_address: '2.137.18.155',
+      grades: [
+        {
+          course: 'Calculus',
+          grade: 50
+        },
+        {
+          course: 'Microeconomics',
+          grade: 43
+        },
+        {
+          course: 'Statistics',
+          grade: 50
+        },
+        {
+          course: 'Astronomy',
+          grade: 63
+        }
+      ]
+    }, data.data, 'It should return the students details and a grades report')
+  } catch (e) {
+    t.error(e)
+  }
+})
+
 tape('cleanup', function (t) {
   server.closeDB()
   server.close()
