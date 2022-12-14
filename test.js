@@ -55,7 +55,7 @@ tape('getStudent', async function (t) {
       ip_address: '232.51.190.184'
     }, data.data, 'Should return the right student')
   } catch (e) {
-    console.log(e)
+    t.error(e)
   }
 })
 
@@ -70,7 +70,7 @@ tape('student id should be in the database', async function (t) {
       message: 'Student not found'
     }, data, 'should return not found')
   } catch (e) {
-    console.log(e)
+    t.error(e)
   }
 })
 
